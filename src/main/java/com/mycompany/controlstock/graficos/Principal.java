@@ -4,13 +4,15 @@ import com.mycompany.controlstock.modelo.Producto;
 import com.mycompany.controlstock.repositorio.Repositorio;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Principal extends javax.swing.JFrame {
 
     private DefaultTableModel model;
-    private Object[] fila = new Object[4];
+    private Object[] fila = new Object[5];
     private Repositorio repo;
     private String ultimaConsulta;
     private ResultSet respuesta;
@@ -20,7 +22,6 @@ public class Principal extends javax.swing.JFrame {
         model = (DefaultTableModel) jTable2.getModel();
         repo = Repositorio.getInstancia();
         setLocationRelativeTo(null);
-
     }
 
     //Metodo comun para actualizar la tabla
@@ -32,12 +33,14 @@ public class Principal extends javax.swing.JFrame {
                             respuesta.getString("codigo"),
                             respuesta.getString("descripcion"),
                             respuesta.getInt("stock"),
-                            respuesta.getLong("precio")
+                            respuesta.getLong("precio"),
+                            respuesta.getString("rubro")
                     );
                     fila[0] = p.getCodigo();
                     fila[1] = p.getDescripcion();
                     fila[2] = p.getStock();
                     fila[3] = "$" + p.getPrecioPorUnidad();
+                    fila[4] = p.getRubro();
                     model.addRow(fila);
                 }
             }
@@ -74,6 +77,8 @@ public class Principal extends javax.swing.JFrame {
         buscarPorDescripcionLB = new javax.swing.JLabel();
         buscarDescripcionTF = new javax.swing.JTextField();
         buscarDescripcionBTN = new javax.swing.JButton();
+        buscarPorRubroLB = new javax.swing.JLabel();
+        buscarPorRubroCBX = new javax.swing.JComboBox<>();
         eliminarPN = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         eliminarLB = new javax.swing.JLabel();
@@ -90,6 +95,8 @@ public class Principal extends javax.swing.JFrame {
         nuevoPrecioLB = new javax.swing.JLabel();
         nuevoPrecioTF = new javax.swing.JTextField();
         guardarNuevoBTN = new javax.swing.JButton();
+        nuevoRubroLB = new javax.swing.JLabel();
+        nuevoRubroTF = new javax.swing.JTextField();
         avisoPN = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
 
@@ -115,7 +122,7 @@ public class Principal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Codigo", "Descripcion", "Stock", "Precio unidad"
+                "Codigo", "Descripcion", "Stock", "Precio unidad", "Rubro"
             }
         ));
         jTable2.setMinimumSize(new java.awt.Dimension(60, 60));
@@ -149,8 +156,8 @@ public class Principal extends javax.swing.JFrame {
         busquedaPN.setLayout(new javax.swing.BoxLayout(busquedaPN, javax.swing.BoxLayout.Y_AXIS));
 
         java.awt.GridBagLayout jPanel4Layout = new java.awt.GridBagLayout();
-        jPanel4Layout.columnWidths = new int[] {0, 6, 0, 6, 0, 6, 0, 6, 0};
-        jPanel4Layout.rowHeights = new int[] {0, 4, 0};
+        jPanel4Layout.columnWidths = new int[] {0, 6, 0, 6, 0, 6, 0, 6, 0, 6, 0, 6, 0};
+        jPanel4Layout.rowHeights = new int[] {0, 4, 0, 4, 0};
         jPanel4.setLayout(jPanel4Layout);
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
@@ -228,6 +235,31 @@ public class Principal extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel4.add(buscarDescripcionBTN, gridBagConstraints);
 
+        buscarPorRubroLB.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        buscarPorRubroLB.setText("Por rubro");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel4.add(buscarPorRubroLB, gridBagConstraints);
+
+        buscarPorRubroCBX.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Alimenticio", "Bebidas", "Tecnologia", "Electrodomesticos", "Miscelaneos" }));
+        buscarPorRubroCBX.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buscarPorRubroCBXMouseClicked(evt);
+            }
+        });
+        buscarPorRubroCBX.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarPorRubroCBXActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel4.add(buscarPorRubroCBX, gridBagConstraints);
+
         busquedaPN.add(jPanel4);
 
         jPanel1.add(busquedaPN);
@@ -268,8 +300,8 @@ public class Principal extends javax.swing.JFrame {
         nuevoPN.setLayout(new javax.swing.BoxLayout(nuevoPN, javax.swing.BoxLayout.X_AXIS));
 
         java.awt.GridBagLayout jPanel8Layout = new java.awt.GridBagLayout();
-        jPanel8Layout.columnWidths = new int[] {0, 6, 0, 6, 0, 6, 0, 6, 0, 6, 0};
-        jPanel8Layout.rowHeights = new int[] {0, 10, 0, 10, 0, 10, 0};
+        jPanel8Layout.columnWidths = new int[] {0, 6, 0, 6, 0, 6, 0, 6, 0, 6, 0, 6, 0};
+        jPanel8Layout.rowHeights = new int[] {0, 10, 0, 10, 0, 10, 0, 10, 0};
         jPanel8.setLayout(jPanel8Layout);
 
         nuevoCodigoLB.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
@@ -359,16 +391,35 @@ public class Principal extends javax.swing.JFrame {
         jPanel8.add(nuevoPrecioTF, gridBagConstraints);
 
         guardarNuevoBTN.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        guardarNuevoBTN.setText("Guardar");
+        guardarNuevoBTN.setText("Agregar");
         guardarNuevoBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 guardarNuevoBTNActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 8;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 12;
+        gridBagConstraints.gridy = 8;
         jPanel8.add(guardarNuevoBTN, gridBagConstraints);
+
+        nuevoRubroLB.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        nuevoRubroLB.setText("Rubro");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel8.add(nuevoRubroLB, gridBagConstraints);
+
+        nuevoRubroTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevoRubroTFActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel8.add(nuevoRubroTF, gridBagConstraints);
 
         nuevoPN.add(jPanel8);
 
@@ -397,7 +448,7 @@ public class Principal extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jDesktopPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
         );
 
         pack();
@@ -446,10 +497,12 @@ public class Principal extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Ingrese un numero de stock y precio validos");
         }
+        
+        p.setRubro(nuevoRubroTF.getText());
 
         if (p.esValido()) {
             StringBuilder builder = new StringBuilder();
-            builder.append("insert into productos(codigo, descripcion, stock, precio) values(");
+            builder.append("insert into productos(codigo, descripcion, stock, precio, rubro) values(");
             builder.append(p.toString());
             builder.append(")");
 
@@ -499,6 +552,58 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_eliminarBTNActionPerformed
 
+    private void nuevoRubroTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoRubroTFActionPerformed
+        guardarNuevoBTNActionPerformed(evt);
+    }//GEN-LAST:event_nuevoRubroTFActionPerformed
+
+    private void buscarPorRubroCBXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPorRubroCBXActionPerformed
+        switch(buscarPorRubroCBX.getSelectedItem().toString()){
+           case "Todos":
+               ultimaConsulta = "select * from productos";
+               respuesta = repo.select(ultimaConsulta);
+               vaciarTabla();
+               actualizarTabla();
+               break;
+           case "Alimenticio":
+               ultimaConsulta = "select * from productos where rubro = 'Alimenticio'";
+               respuesta = repo.select(ultimaConsulta);
+               vaciarTabla();
+               actualizarTabla();
+               break;
+           case "Bebidas":
+               ultimaConsulta = "select * from productos where rubro = 'Bebidas'";
+               respuesta = repo.select(ultimaConsulta);
+               vaciarTabla();
+               actualizarTabla();
+               break;
+           case "Tecnologia":
+               ultimaConsulta = "select * from productos where rubro = 'Tecnologia'";
+               respuesta = repo.select(ultimaConsulta);
+               vaciarTabla();
+               actualizarTabla();
+               break;
+            case "Miscelaneos":
+               ultimaConsulta = "select * from productos where rubro = 'Miscelaneos'";
+               respuesta = repo.select(ultimaConsulta);
+               vaciarTabla();
+               actualizarTabla();
+               break;
+            case "Electrodomesticos":
+               ultimaConsulta = "select * from productos where rubro = 'Electrodomesticos'";
+               respuesta = repo.select(ultimaConsulta);
+               vaciarTabla();
+               actualizarTabla();
+               break;
+           default:
+               System.out.println("Combo box invalido");
+               break;
+       }
+    }//GEN-LAST:event_buscarPorRubroCBXActionPerformed
+
+    private void buscarPorRubroCBXMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarPorRubroCBXMouseClicked
+        
+    }//GEN-LAST:event_buscarPorRubroCBXMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton actualizarBTN;
@@ -507,6 +612,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton buscarDescripcionBTN;
     private javax.swing.JTextField buscarDescripcionTF;
     private javax.swing.JLabel buscarPorDescripcionLB;
+    private javax.swing.JComboBox<String> buscarPorRubroCBX;
+    private javax.swing.JLabel buscarPorRubroLB;
     private javax.swing.JPanel busquedaPN;
     private javax.swing.JTextField busquedaPorCodigoTF;
     private javax.swing.JButton eliminarBTN;
@@ -531,6 +638,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel nuevoPN;
     private javax.swing.JLabel nuevoPrecioLB;
     private javax.swing.JTextField nuevoPrecioTF;
+    private javax.swing.JLabel nuevoRubroLB;
+    private javax.swing.JTextField nuevoRubroTF;
     private javax.swing.JLabel nuevoStockLB;
     private javax.swing.JTextField nuevoStockTF;
     private javax.swing.JPanel productosPN;
